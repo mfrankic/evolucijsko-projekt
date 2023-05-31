@@ -4,20 +4,24 @@ import gymnasium as gym
 # Initialize your environment
 env = gym.make("CartPole-v1", render_mode='human')
 
-DISCRETE_OS_SIZE = [25, 25] #our dimensions
-real_observation_space = np.array([env.observation_space.high[2], 3.5]) #disregarding cart data
+DISCRETE_OS_SIZE = [50, 50, 100, 100] #our dimensions
+real_observation_space = np.array([env.observation_space.high[0], env.observation_space.high[1], env.observation_space.high[2], 3.5]) #disregarding cart data
 discrete_os_win_size = (real_observation_space * 2 / DISCRETE_OS_SIZE) #step-size inside our discrete observation space
 # Define your function to get discrete state
+# def get_discrete_state(state):
+#     trimmed_state = np.array([state[2], state[3]])
+#     discrete_state = (trimmed_state + real_observation_space) / discrete_os_win_size
+#     return tuple(discrete_state.astype(int))
+
 def get_discrete_state(state):
-    trimmed_state = np.array([state[2], state[3]])
-    discrete_state = (trimmed_state + real_observation_space) / discrete_os_win_size
+    discrete_state = (state + real_observation_space) / discrete_os_win_size
     return tuple(discrete_state.astype(int))
 
 # Load the saved q_table from a file
 q_table = np.load('q_table.npy')
 
 # Run some episodes using the learned Q-table
-for episode in range(5):  # Let's play 5 episodes
+for episode in range(1):  # Let's play 5 episodes
     done = False
     state, _ = env.reset()
     discrete_state = get_discrete_state(state)
