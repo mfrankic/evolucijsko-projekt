@@ -1,7 +1,8 @@
-import gym
+import gymnasium as gym
 import numpy as np
-from multiprocessing import Pool
+import multiprocessing as mp
 import pickle
+import time
 
 # Agent class
 class Agent:
@@ -39,7 +40,7 @@ def evolution_strategy(sigma, population_size, generation_count):
     agent = Agent(env)
 
     for generation in range(generation_count):
-        pool = Pool()
+        pool = mp.Pool(processes=mp.cpu_count())
         new_agents = []
         for _ in range(population_size):
             new_agent = Agent(env)
@@ -57,9 +58,9 @@ def evolution_strategy(sigma, population_size, generation_count):
     return agent
 
 def main():
-    sigma = 0.3
-    population_size = 100
-    generation_count = 200
+    sigma = 0.25
+    population_size = 50
+    generation_count = 100
 
     best_agent = evolution_strategy(sigma, population_size, generation_count)
 
@@ -70,4 +71,6 @@ def main():
     env.close()
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    print(f'Time taken: {time.time() - start_time}')
