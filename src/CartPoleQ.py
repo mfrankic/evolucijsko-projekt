@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 
-env = gym.make("CartPole-v1", max_episode_steps=5000)
+env = gym.make("CartPole-v1")
 env.reset()
 
 def print_observation_space(env):
@@ -13,11 +13,6 @@ DISCRETE_OS_SIZE = [50, 50, 100, 100] #our dimensions
 real_observation_space = np.array([env.observation_space.high[0], env.observation_space.high[1], env.observation_space.high[2], 3.5]) #disregarding cart data
 discrete_os_win_size = (real_observation_space * 2 / DISCRETE_OS_SIZE) #step-size inside our discrete observation space
 
-# def get_discrete_state(state):
-#     trimmed_state = np.array([state[2], state[3]])
-#     discrete_state = (trimmed_state + real_observation_space) / discrete_os_win_size
-#     return tuple(discrete_state.astype(int))
-
 def get_discrete_state(state):
     discrete_state = (state + real_observation_space) / discrete_os_win_size
     return tuple(discrete_state.astype(int))
@@ -25,12 +20,12 @@ def get_discrete_state(state):
 q_table = np.random.uniform(low=0, high=1, size =(DISCRETE_OS_SIZE + [env.action_space.n]))
 
 LEARNING_RATE = 0.1
-DISCOUNT = 0.99
+DISCOUNT = 0.95
 EPISODES = 20000
 LOG_FREQUENCY = 500
 epsilon = 0.3
 START_DECAY = 1
-END_DECAY = EPISODES // 2
+END_DECAY = EPISODES // 1.5
 epsilon_decay_by = epsilon / (END_DECAY - START_DECAY)
 
 total_reward = 0
@@ -63,7 +58,7 @@ for episode in range(EPISODES):
         
         cart_position = new_state[0]
         pole_angle = new_state[2]
-        reward = reward - np.abs(cart_position)/4.8 - np.abs(pole_angle)/0.418
+        reward = reward - (np.abs(cart_position)/4.8)**2 - (np.abs(pole_angle * 1.2)/0.418)**0.5
         
         new_discrete_state = get_discrete_state(new_state)
         total_reward += reward
