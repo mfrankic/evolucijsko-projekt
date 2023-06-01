@@ -11,6 +11,7 @@ class Agent:
         action = np.dot(self.weights, state)
         action = np.tanh(action)  # squash outputs to be between -1 and 1
         action = int((action + 1) * 1.5)  # scale to 0, 1, or 2
+        # action = int((action + 1) // 2 * 2)
         return action
 
 def play_game(env, agent):
@@ -18,7 +19,6 @@ def play_game(env, agent):
     done = False
     total_reward = 0
     while not done:
-        env.render()
         action = agent.get_action(state)
         state, reward, terminated, truncated, _ = env.step(action)
         done = terminated or truncated

@@ -26,15 +26,9 @@ class Agent:
             state, reward, terminated, truncated, info = self.env.step(action)
             done = terminated or truncated
             position, velocity = state
-            if position > max_position:
-                max_position = position
-                total_reward += 0.5
-            if velocity > 0.1 and action == 0:
-                total_reward -= 0.5
-            if velocity < -0.1 and action == 2:
-                total_reward -= 0.5
-            if position > -0.55 and position < -0.4 and action == 1:
-                total_reward -= 0.5
+            # if position > max_position + 0.1:
+            #     max_position = position
+            #     total_reward += 1
             
             total_reward += reward
         return total_reward
@@ -51,6 +45,8 @@ def get_fitness(agent):
 
 # Evolution strategy
 def evolution_strategy(sigma, population_size, generation_count):
+    end_decay = generation_count // 1.5
+    decay_by = sigma / (end_decay - 1)
     agent = Agent(env)
 
     for generation in range(generation_count):
@@ -67,24 +63,16 @@ def evolution_strategy(sigma, population_size, generation_count):
         max_index = fitnesses.index(max_fitness)
 
         agent = new_agents[max_index]
-        print(f'Generation {generation}, max fitness: {max_fitness}')
+        print(f'Generation {generation+1}, max fitness: {max_fitness}')
         
-        if max_fitness > -200:
-            sigma = 0.3
-        if max_fitness > -170:
-            sigma = 0.2
-        if max_fitness > -150:
-            sigma = 0.1
-        if max_fitness > -120:
-            sigma = 0.05
-        if max_fitness > -90:
-            sigma = 0.01
+        if end_decay >= generation >= 1:
+            sigma -= decay_by
 
     return agent
 
 def main():
-    sigma = 0.4
-    population_size = 100
+    sigma = 0.5
+    population_size = 300
     generation_count = 500
 
     best_agent = evolution_strategy(sigma, population_size, generation_count)
