@@ -1,42 +1,29 @@
-import numpy as np
 import gymnasium as gym
+import numpy as np
 import pickle
 import multiprocessing as mp
 
 from es import OpenES
 
-class MountainCarSolver:
+class BipedalWalkerSolver:
     def __init__(self, num_params):
-        self.es = OpenES(num_params,
-                        sigma_init=0.5,
-                        learning_rate=0.1,
-                        popsize=500)
-        
+        self.es = OpenES(num_params)
+
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
-        enhanced_state = np.array([state[0], state[1], state[0] * state[1]])
-        action = np.matmul(params, enhanced_state)
-        if action < -0.5:
-            return 0  # push left
-        elif action > 0.5:
-            return 2  # push right
-        else:
-            return 1  # do nothing
+        params_reshaped = params.reshape(4, 24)
+        return np.tanh(np.matmul(params_reshaped, state))  # returns a 4-dimensional vector
 
     def get_reward(self, params):
         """Run one episode with the given parameters and return the total reward."""
-        env = gym.make('MountainCar-v0')
+        env = gym.make('BipedalWalker-v3')
         state, _ = env.reset()
         total_reward = 0.0
-        for _ in range(200):  # Run for a maximum of 200 steps
+        for _ in range(2000):  # Run for a maximum of 2000 steps
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
-            position, velocity = state
-            reward += np.abs(position + 0.5) + np.abs(velocity)**0.25
             total_reward += reward
-            if terminated:
-                total_reward += 200.0
             if done:
                 break
         return total_reward
@@ -46,6 +33,7 @@ class MountainCarSolver:
         with mp.Pool() as pool:
             for iter in range(num_iterations):
                 params_list = self.es.ask()
+                # Parallelize the computation of rewards
                 reward_list = pool.map(self.get_reward, params_list)
                 self.es.tell(reward_list)
                 if (iter + 1) % 100 == 0:
@@ -64,11 +52,11 @@ class MountainCarSolver:
             
     def play(self, params):
         """Use the trained policy to play the game."""
-        env = gym.make('MountainCar-v0', render_mode='human')
+        env = gym.make('BipedalWalker-v3', render_mode='human')
         state, _ = env.reset()
         
         total_reward = 0
-        for _ in range(200):
+        for _ in range(2000):
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
