@@ -8,9 +8,7 @@ from es import OpenES
 class MountainCarSolver:
     def __init__(self, num_params):
         self.es = OpenES(num_params,
-                        sigma_init=0.5,
-                        learning_rate=0.1,
-                        popsize=500)
+                        sigma_init=0.5)
         
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
@@ -32,11 +30,8 @@ class MountainCarSolver:
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
-            position, velocity = state
-            reward += np.abs(position + 0.5) + np.abs(velocity)**0.25
+            
             total_reward += reward
-            if terminated:
-                total_reward += 200.0
             if done:
                 break
         return total_reward
@@ -61,6 +56,7 @@ class MountainCarSolver:
         """Load the best parameters from a file."""
         with open(filename, 'rb') as f:
             self.es.set_mu(pickle.load(f))
+        return self.es.mu
             
     def play(self, params):
         """Use the trained policy to play the game."""

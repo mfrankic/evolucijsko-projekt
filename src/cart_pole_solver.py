@@ -7,7 +7,7 @@ from es import OpenES
 
 class CartPoleSolver:
     def __init__(self, num_params):
-        self.es = OpenES(num_params)
+        self.es = OpenES(num_params, popsize=50)
         
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
@@ -47,6 +47,7 @@ class CartPoleSolver:
         """Load the best parameters from a file."""
         with open(filename, 'rb') as f:
             self.es.set_mu(pickle.load(f))
+        return self.es.mu
             
     def play(self, params):
         """Use the trained policy to play the game."""
