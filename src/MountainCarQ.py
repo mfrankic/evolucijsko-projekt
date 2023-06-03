@@ -9,7 +9,7 @@ LEARNING_RATE = 0.1
 
 DISCOUNT = 0.95
 EPISODES = 10000
-SHOW_EVERY = 500
+SHOW_EVERY = 100
 
 DISCRETE_OS_SIZE = [20] * len(env.observation_space.high)
 discrete_os_win_size = (env.observation_space.high - env.observation_space.low) / DISCRETE_OS_SIZE
@@ -31,7 +31,7 @@ for episode in range(EPISODES):
     obs, info = env.reset()
     discrete_state = get_discrete_table(obs)
 
-    #if episode % SHOW_EVERY == 0:
+    # if episode % SHOW_EVERY == 0:
     #    print(episode)
 
     while not done:

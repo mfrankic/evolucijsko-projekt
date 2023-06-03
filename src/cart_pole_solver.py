@@ -49,9 +49,13 @@ class CartPoleSolver:
             self.es.set_mu(pickle.load(f))
         return self.es.mu
             
-    def play(self, params):
+    def play(self, params, render=True):
         """Use the trained policy to play the game."""
-        env = gym.make('CartPole-v1', render_mode='human')
+        if render:
+            env = gym.make('CartPole-v1', render_mode='human')
+        else:
+            env = gym.make('CartPole-v1')
+            
         state, _ = env.reset()
         
         total_reward = 0
@@ -65,3 +69,4 @@ class CartPoleSolver:
               
         print(f'Total reward: {total_reward}')
         env.close()
+        return total_reward

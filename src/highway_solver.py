@@ -1,43 +1,34 @@
 import gymnasium as gym
 import numpy as np
-import pickle
 import multiprocessing as mp
+import pickle
+import warnings
 
 from es import OpenES
 
-class BipedalWalkerSolver:
+class HighwaySolver:
     def __init__(self, num_params):
-        self.es = OpenES(num_params)
+        self.es = OpenES(num_params, popsize=8)
 
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
-        params_reshaped = params.reshape(4, 24)
-        return np.tanh(np.matmul(params_reshaped, state))  # returns a 4-dimensional vector
+        q_values = np.matmul(params.reshape(5, 5*5), state.flatten())
+        return np.argmax(q_values)
 
     def get_reward(self, params):
         """Run one episode with the given parameters and return the total reward."""
-        env = gym.make('BipedalWalker-v3')
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', category=UserWarning)
+            env = gym.make('highway-v0')
         state, _ = env.reset()
+        state = state.flatten()
         total_reward = 0.0
-        no_change_counter = 0
-        previous_state = state
-        
-        for _ in range(2000):  # Run for a maximum of 2000 steps
+        for _ in range(40):  # Run for a maximum of 500 steps
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
+            state = state.flatten()
             done = terminated or truncated
             total_reward += reward
-            
-            # Stop the simulation if agent is stuck
-            if np.allclose(previous_state, state, atol=1e-4):
-                no_change_counter += 1
-                if no_change_counter > 50:
-                    break
-            else:
-                no_change_counter = 0
-
-            previous_state = state
-            
             if done:
                 break
         return total_reward
@@ -47,37 +38,39 @@ class BipedalWalkerSolver:
         with mp.Pool() as pool:
             for iter in range(num_iterations):
                 params_list = self.es.ask()
+                # Parallelize the computation of rewards
                 reward_list = pool.map(self.get_reward, params_list)
                 self.es.tell(reward_list)
-                if (iter + 1) % 10 == 0:
-                    print(f'Iteration: {iter + 1}, Reward: {np.mean(reward_list)}')
-                    # append the iteration number and reward to a csv file
-                    with open('../data/bipedal_walker_iteration_reward.csv', 'a') as f:
-                        f.write(f'{iter + 1},{np.mean(reward_list)}\n')
+                if (iter + 1) % 1 == 0:
+                    print(f'Iteration: {iter + 1}, Reward: {max(reward_list)}')
         return self.es.result()
 
     def save_weights(self, filename):
-        """Save the best parameters to a file."""
+        """Save the weights of the model to a file."""
         with open(filename, 'wb') as f:
             pickle.dump(self.es.best_param(), f)
 
     def load_weights(self, filename):
-        """Load the best parameters from a file."""
+        """Load the weights of the model from a file."""
         with open(filename, 'rb') as f:
             self.es.set_mu(pickle.load(f))
         return self.es.mu
-            
+      
     def play(self, params, render=True):
         """Use the trained policy to play the game."""
         if render:
-            env = gym.make('BipedalWalker-v3', render_mode='human')
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=UserWarning)
+                env = gym.make('highway-v0', render_mode='human')
         else:
-            env = gym.make('BipedalWalker-v3')
-        
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=UserWarning)
+                env = gym.make('highway-v0')
+            
         state, _ = env.reset()
         
         total_reward = 0
-        for _ in range(2000):
+        for _ in range(500):
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
