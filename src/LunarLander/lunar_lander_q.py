@@ -57,25 +57,19 @@ for i in range(EPISODES):
     curr_state = discretize_state(env.reset()[0])
     
     while True:
-        # choose action A from S using behaviour policy -> ε-greedy
         action = epsilon_greedy(q_states, curr_state, epsilon, num_actions)
 
-        # Create (S, A) pair
         qstate = curr_state + (action, )
 
-        # Take action A, earn immediate reward R and land into next state S'
-        # S --> A --> R --> S'
         observation, reward, terminated, truncated, _ = env.step(action)
         done = terminated or truncated
         next_state = discretize_state(observation)
 
-        ###################################################################
         # Policy evaluation step
         if not done:
-            q_states[qstate] += LEARNING_RATE * (reward + GAMMA * greedy(q_states, next_state, num_actions) - q_states[qstate]) # (S', A') non terminal state
+            q_states[qstate] += LEARNING_RATE * (reward + GAMMA * greedy(q_states, next_state, num_actions) - q_states[qstate])
         else:
-            q_states[qstate] += LEARNING_RATE * (reward - q_states[qstate])    # (S', A') terminal state
-        ###################################################################
+            q_states[qstate] += LEARNING_RATE * (reward - q_states[qstate])
 
         return_per_ep[-1] += reward
 
