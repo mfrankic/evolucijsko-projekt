@@ -10,11 +10,12 @@ from es import OpenES
 
 class LunarLanderSolver:
     def __init__(self, num_params):
-        self.es = OpenES(num_params, popsize=50)
+        self.es = OpenES(num_params)
 
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
-        return np.argmax(np.dot(params, state))  # action is now chosen from a discrete set of 4 actions.
+        params = np.reshape(params, (4, 8))
+        return np.argmax(np.matmul(params, state))  # action is now chosen from a discrete set of 4 actions.
 
     def get_reward(self, params):
         """Run one episode with the given parameters and return the total reward."""
@@ -32,13 +33,16 @@ class LunarLanderSolver:
 
     def train(self, num_iterations):
         """Train the policy for the given number of iterations."""
-        with mp.Pool() as pool:
+        with mp.Pool(12) as pool:
             for iter in range(num_iterations):
                 params_list = self.es.ask()
                 reward_list = pool.map(self.get_reward, params_list)
                 self.es.tell(reward_list)
                 if (iter + 1) % 10 == 0:
                     print(f'Iteration: {iter + 1}, Reward: {max(reward_list)}')
+                    # append the iteration number and reward to a csv file
+                    with open('../../data/lunar_lander_iteration_reward.csv', 'a') as f:
+                        f.write(f'{iter + 1},{np.mean(reward_list)}\n')
         return self.es.result()
 
     def save_weights(self, filename):

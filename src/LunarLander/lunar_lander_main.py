@@ -4,12 +4,12 @@ import time
 from lunar_lander_solver import LunarLanderSolver
 
 # Assume a simple linear policy with four parameters corresponding to the four state variables
-solver = LunarLanderSolver(num_params=4)
+solver = LunarLanderSolver(num_params=4*8)
 
 def main(action, get_data=False):
     if action == 'train':
         # Train the model
-        iterations = 100
+        iterations = 2000
         start = time.time()
         best_params, best_reward, curr_reward, sigma = solver.train(num_iterations=iterations)
         end = time.time()
