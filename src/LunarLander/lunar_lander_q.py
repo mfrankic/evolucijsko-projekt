@@ -6,12 +6,13 @@ import random
 env = gym.make("LunarLander-v2")
 env.reset()
 
-n_episodes = 50000
-gamma = 0.99
-lr = 0.1
-min_eps = 0.01
+EPISODES = 50000
+GAMMA = 0.99
+LEARNING_RATE = 0.1
+MIN_EPSILON = 0.01
+DECAY_EPSILON = 0.996
 
-print_freq = 100
+PRINT_FREQUENCY = 100
 
 q_states = collections.defaultdict(float)   # note that the first insertion of a key initializes its value to 0.0
 return_per_ep = [0.0]
@@ -47,9 +48,9 @@ def decay_epsilon(curr_eps, exploration_final_eps):
     if curr_eps < exploration_final_eps:
         return curr_eps
     
-    return curr_eps * 0.996
+    return curr_eps * DECAY_EPSILON
 
-for i in range(n_episodes):
+for i in range(EPISODES):
     t = 0
 
     # Initial episode state: S
@@ -71,15 +72,15 @@ for i in range(n_episodes):
         ###################################################################
         # Policy evaluation step
         if not done:
-            q_states[qstate] += lr * (reward + gamma * greedy(q_states, next_state, num_actions) - q_states[qstate]) # (S', A') non terminal state
+            q_states[qstate] += LEARNING_RATE * (reward + GAMMA * greedy(q_states, next_state, num_actions) - q_states[qstate]) # (S', A') non terminal state
         else:
-            q_states[qstate] += lr * (reward - q_states[qstate])    # (S', A') terminal state
+            q_states[qstate] += LEARNING_RATE * (reward - q_states[qstate])    # (S', A') terminal state
         ###################################################################
 
         return_per_ep[-1] += reward
 
         if done:
-            if (i + 1) % print_freq == 0:
+            if (i + 1) % PRINT_FREQUENCY == 0:
                 print("\nEpisode finished after {} timesteps".format(t + 1))
                 print("Episode {}: Total Return = {}".format(i + 1, return_per_ep[-1]))
                 print("Total keys in q_states dictionary = {}".format(len(q_states)))
@@ -88,7 +89,7 @@ for i in range(n_episodes):
                 mean_100ep_reward = round(np.mean(return_per_ep[-101:-1]), 1)
                 print("Last 100 episodes mean reward: {}".format(mean_100ep_reward))
 
-            epsilon = decay_epsilon(epsilon, min_eps)
+            epsilon = decay_epsilon(epsilon, MIN_EPSILON)
             return_per_ep.append(0.0)
 
             break
