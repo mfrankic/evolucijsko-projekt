@@ -1,17 +1,28 @@
-# evolucijsko-projekt
+# Evolution Strategies and Q-Learning Comparison
 
-## Installation
+## Requirements
 
-In root directory run:
+### Cart Pole, Mountain Car
 
 ```bash
   pip install gymnasium
-  pip install "gymnasium[atari,accept-rom-license]"
+  pip install "gymnasium[classic_control]"
 ```
 
-## Usage
+### Bipedal Walker
 
 ```bash
-  cd src
-  python main.py
+  pip install gymnasium
+  pip install "gymnasium[box2d]"
 ```
+
+### Highway
+
+```bash
+  pip install gymnasium
+  pip install highway-env
+```
+
+### Flappy Bird
+
+Pygame Learning Environment - [PLE](https://pygame-learning-environment.readthedocs.io/)

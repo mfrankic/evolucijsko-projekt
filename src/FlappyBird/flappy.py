@@ -1,5 +1,5 @@
 import random
-import _pickle as pickle
+import pickle
 import numpy as np
 from EvolutionStrategy import EvolutionStrategy
 from ple import PLE
