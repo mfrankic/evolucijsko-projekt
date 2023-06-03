@@ -17,7 +17,7 @@ def main(action):
         training_time = end - start
         
         # save the training time and number of iterations to a csv file
-        with open('../data/highway_training_time.csv', 'w') as f:
+        with open('../../data/highway_training_time.csv', 'w') as f:
             f.write(f'{training_time},{iterations}')
 
         # Save the weights
@@ -32,7 +32,7 @@ def main(action):
         for i in range(1, 1001):
             score = solver.play(best_params)
             # save the score to a csv file
-            with open('../data/highway_scores.csv', 'a') as f:
+            with open('../../data/highway_scores.csv', 'a') as f:
                 f.write(f'{i},{score}\n')
     else:
         print('Invalid action')
