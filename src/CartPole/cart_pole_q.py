@@ -9,7 +9,7 @@ def print_observation_space(env):
     print(f"Observation space low: {env.observation_space.low}")
     print(f"Number of actions in the action space: {env.action_space.n}")
 
-DISCRETE_OS_SIZE = [50, 50, 100, 100] #our dimensions
+DISCRETE_OS_SIZE = [20, 20, 50, 50] #our dimensions
 real_observation_space = np.array([env.observation_space.high[0], env.observation_space.high[1], env.observation_space.high[2], 3.5]) #disregarding cart data
 discrete_os_win_size = (real_observation_space * 2 / DISCRETE_OS_SIZE) #step-size inside our discrete observation space
 
@@ -32,11 +32,8 @@ total_reward = 0
 for episode in range(EPISODES):
     #Just some logging info
     if (episode + 1) % LOG_FREQUENCY == 0:
-        render = True
         print(f"Episode {episode + 1}")
         print(f"Total reward: {total_reward}")
-    else:
-        render = False
 
     #Resetting the environment as well as getting state 0
     state, _ = env.reset()
@@ -62,9 +59,6 @@ for episode in range(EPISODES):
         
         new_discrete_state = get_discrete_state(new_state)
         total_reward += reward
-
-        if render:
-            env.render()
 
         # Adjusting the values in our Q-table according to the Q-learning formula
         if not done:

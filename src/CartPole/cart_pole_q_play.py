@@ -4,7 +4,7 @@ import gymnasium as gym
 # Initialize your environment
 env = gym.make("CartPole-v1", render_mode='human')
 
-DISCRETE_OS_SIZE = [50, 50, 100, 100] #our dimensions
+DISCRETE_OS_SIZE = [20, 20, 50, 50] #our dimensions
 real_observation_space = np.array([env.observation_space.high[0], env.observation_space.high[1], env.observation_space.high[2], 3.5]) #disregarding cart data
 discrete_os_win_size = (real_observation_space * 2 / DISCRETE_OS_SIZE) #step-size inside our discrete observation space
 
@@ -32,9 +32,6 @@ for episode in range(1):
         new_discrete_state = get_discrete_state(new_state)
         
         total_reward += reward
-
-        # Render the environment to visualize the playing
-        env.render()
 
         # Update the current state
         discrete_state = new_discrete_state
