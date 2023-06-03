@@ -1,6 +1,8 @@
 import gymnasium as gym
 import numpy as np
 
+from gymnasium.wrappers import RecordVideo
+
 # Load the saved q_states dictionary
 q_states = np.load("q_states.npy", allow_pickle=True).item() 
 
@@ -21,7 +23,7 @@ def best_action(qstates_dict, state, env_actions):
     qvals = [qstates_dict[state + (action, )] for action in range(env_actions)]
     return np.argmax(qvals)
 
-env = gym.make("LunarLander-v2", render_mode="human")
+env = RecordVideo(gym.make("LunarLander-v2", render_mode="rgb_array"), video_folder="../videos/lunar_lander", name_prefix="q_play")
 env.reset()
 
 # This is the maximum number of timesteps per episode. Set it as per your requirements.
