@@ -1,10 +1,14 @@
 import random
 import pickle
 import numpy as np
-from EvolutionStrategy import EvolutionStrategy
 from ple import PLE
 from ple.games.flappybird import FlappyBird
 from flappy_model import Model
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from EvolutionStrategy import EvolutionStrategy
 
 
 class Agent:

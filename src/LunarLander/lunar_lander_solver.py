@@ -8,20 +8,20 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from es import OpenES
 
-class CartPoleSolver:
+class LunarLanderSolver:
     def __init__(self, num_params):
         self.es = OpenES(num_params, popsize=50)
-        
+
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
-        return 0 if np.matmul(params, state) < 0 else 1
+        return np.argmax(np.dot(params, state))  # action is now chosen from a discrete set of 4 actions.
 
     def get_reward(self, params):
         """Run one episode with the given parameters and return the total reward."""
-        env = gym.make('CartPole-v1')
+        env = gym.make('LunarLander-v2')
         state, _ = env.reset()
         total_reward = 0.0
-        for _ in range(500):  # Run for a maximum of 500 steps
+        for _ in range(1000):  # Run for a maximum of 1000 steps
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
@@ -55,14 +55,14 @@ class CartPoleSolver:
     def play(self, params, render=True):
         """Use the trained policy to play the game."""
         if render:
-            env = gym.make('CartPole-v1', render_mode='human')
+            env = gym.make('LunarLander-v2', render_mode='human')
         else:
-            env = gym.make('CartPole-v1')
-            
+            env = gym.make('LunarLander-v2')
+
         state, _ = env.reset()
         
         total_reward = 0
-        for _ in range(500):
+        for _ in range(1000):
             action = self.get_action(params, state)
             state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated

@@ -2,7 +2,10 @@ import gymnasium as gym
 import numpy as np
 import pickle
 import multiprocessing as mp
+import sys
+import os
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from es import OpenES
 
 class BipedalWalkerSolver:
