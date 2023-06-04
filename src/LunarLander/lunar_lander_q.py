@@ -32,7 +32,7 @@ def discretize_state(state):
 
     return discrete_state
 
-def epsilon_greedy(q_func, state, eps, env_actions):
+def get_action(q_func, state, eps, env_actions):
     prob = np.random.random()
 
     if prob < eps:
@@ -59,7 +59,7 @@ for i in range(EPISODES):
     curr_state = discretize_state(env.reset()[0])
     
     while True:
-        action = epsilon_greedy(q_states, curr_state, epsilon, num_actions)
+        action = get_action(q_states, curr_state, epsilon, num_actions)
 
         qstate = curr_state + (action, )
 
