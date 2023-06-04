@@ -1,8 +1,6 @@
 import gymnasium as gym
 import numpy as np
 
-from gymnasium.wrappers import RecordVideo
-
 # Load the saved q_states dictionary
 q_states = np.load("q_states.npy", allow_pickle=True).item() 
 
@@ -23,19 +21,19 @@ def best_action(qstates_dict, state, env_actions):
     qvals = [qstates_dict[state + (action, )] for action in range(env_actions)]
     return np.argmax(qvals)
 
-env = RecordVideo(gym.make("LunarLander-v2", render_mode="rgb_array"), video_folder="../videos/lunar_lander", name_prefix="q_play")
+env = gym.make("LunarLander-v2")
 env.reset()
 
 # This is the maximum number of timesteps per episode. Set it as per your requirements.
-max_timesteps_per_episode = 1000
+MAX_TIMESTEPS_PER_EPISODE = 1000
 
 # Loop over episodes
-for episode in range(1):
+for episode in range(1000):
     # Reset the environment and initialize variables
     state = discretize_state(env.reset()[0])
     total_reward = 0
 
-    for t in range(max_timesteps_per_episode):
+    for t in range(MAX_TIMESTEPS_PER_EPISODE):
         # Choose the action with the highest Q-value for the current state
         action = best_action(q_states, state, env.action_space.n)
 
@@ -51,6 +49,10 @@ for episode in range(1):
             break
 
         state = next_state
+    
+    # append the score for the episode to a file
+    with open('../../data/lunar_lander_q_scores.csv', 'a') as f:
+        f.write(f'{episode + 1},{total_reward}\n')
 
     print("\nEpisode {} finished after {} timesteps".format(episode + 1, t + 1))
     print("Episode {}: Total Reward = {}".format(episode + 1, total_reward))

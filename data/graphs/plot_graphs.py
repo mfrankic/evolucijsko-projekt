@@ -20,16 +20,17 @@ def plot_graphs():
                 plt.title(file)
                 plt.xlabel("Generation")
                 plt.ylabel("Reward")
+                plt.grid(True)
                 plt.savefig(os.path.join(graphs_dir, file[:-4] + ".png"))
                 plt.clf()
             elif "scores" in file:
                 plt.scatter(df["run"], df["score"], s=1)
                 # plot average line for all runs
                 plt.plot(np.unique(df["run"]), np.poly1d(np.polyfit(df["run"], df["score"], 1))(np.unique(df["run"])), color="red")
-                
                 plt.title(file)
                 plt.xlabel("Run")
                 plt.ylabel("score")
+                plt.grid(True)
                 plt.savefig(os.path.join(graphs_dir, file[:-4] + ".png"))
                 plt.clf()
             else:

@@ -4,14 +4,9 @@ import numpy as np
 env = gym.make("CartPole-v1")
 env.reset()
 
-def print_observation_space(env):
-    print(f"Observation space high: {env.observation_space.high}")
-    print(f"Observation space low: {env.observation_space.low}")
-    print(f"Number of actions in the action space: {env.action_space.n}")
-
-DISCRETE_OS_SIZE = [20, 20, 50, 50] #our dimensions
-real_observation_space = np.array([env.observation_space.high[0], env.observation_space.high[1], env.observation_space.high[2], 3.5]) #disregarding cart data
-discrete_os_win_size = (real_observation_space * 2 / DISCRETE_OS_SIZE) #step-size inside our discrete observation space
+DISCRETE_OS_SIZE = [20, 20, 50, 50]
+real_observation_space = np.array([env.observation_space.high[0], env.observation_space.high[1], env.observation_space.high[2], 3.5])
+discrete_os_win_size = (real_observation_space * 2 / DISCRETE_OS_SIZE)
 
 def get_discrete_state(state):
     discrete_state = (state + real_observation_space) / discrete_os_win_size
@@ -73,22 +68,5 @@ for episode in range(EPISODES):
     #Decay epsilon
     if END_DECAY >= episode >= START_DECAY:
         epsilon -= epsilon_decay_by
-
-#Helper function to get true max velocities
-def get_max_velocity(env):
-    max_velo_cart = 0
-    max_velo_pole = 0
-    env.reset()
-    done = False
-    while not done:
-        new_state, _, terminated, truncated, _ = env.step(1)
-        done = terminated or truncated
-        if (abs(new_state[1]) > max_velo_cart):
-            max_velo_cart = abs(new_state[1])
-        if abs(new_state[3]) > max_velo_pole:
-            max_velo_pole = abs(new_state[3])
-        env.render()
-    print(f"Max_velo_cart={max_velo_cart}")
-    print(f"Max_velo_pole={max_velo_pole}")
     
 np.save("q_table.npy", q_table)

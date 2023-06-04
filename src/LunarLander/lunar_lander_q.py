@@ -2,6 +2,7 @@ import gymnasium as gym
 import collections
 import numpy as np
 import random
+import time
 
 env = gym.make("LunarLander-v2")
 env.reset()
@@ -50,6 +51,7 @@ def decay_epsilon(curr_eps, exploration_final_eps):
     
     return curr_eps * DECAY_EPSILON
 
+start = time.time() / 60
 for i in range(EPISODES):
     t = 0
 
@@ -90,6 +92,18 @@ for i in range(EPISODES):
 
         curr_state = next_state
         t += 1
-    
+        
+    if((i + 1) % 10 == 0):
+        # append the iteration number and reward to a csv file
+        with open('../../data/lunar_lander_q_iteration_reward.csv', 'a') as f:
+            f.write(f'{i + 1}, {round(np.mean(return_per_ep[-102:-2]), 1)}\n')
+
+end = time.time() / 60
+training_time = end - start
+# save training time and number of episodes to csv file with name 'lunar_lander_q_training_time.csv'
+with open('../../data/lunar_lander_q_training_time.csv', 'w') as f:
+    f.write("minutes,generations\n")
+    f.write(f'{training_time}, {EPISODES}')
+
 # save q_states dictionary to file
 np.save("q_states.npy", q_states)
