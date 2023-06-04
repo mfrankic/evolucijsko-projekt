@@ -25,8 +25,10 @@ def plot_graphs():
                 plt.clf()
             elif "scores" in file:
                 plt.scatter(df["run"], df["score"], s=1)
-                # plot average line for all runs
-                plt.plot(np.unique(df["run"]), np.poly1d(np.polyfit(df["run"], df["score"], 1))(np.unique(df["run"])), color="red")
+                # get average score for all values in score column
+                avg_score = [df["score"].mean()] * len(df["run"])
+                
+                plt.plot(np.arange(len(avg_score)), avg_score, color="red")
                 plt.title(file)
                 plt.xlabel("Run")
                 plt.ylabel("score")
