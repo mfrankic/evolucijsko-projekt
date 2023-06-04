@@ -37,8 +37,11 @@ class CartPoleSolver:
                 params_list = self.es.ask()
                 reward_list = pool.map(self.get_reward, params_list)
                 self.es.tell(reward_list)
-                if (iter + 1) % 10 == 0:
+                if (iter + 1) % 1 == 0:
                     print(f'Iteration: {iter + 1}, Reward: {max(reward_list)}')
+                    # append the iteration number and reward to a csv file
+                    with open('../../data/cart_pole_iteration_reward.csv', 'a') as f:
+                        f.write(f'{iter + 1},{np.mean(reward_list)}\n')
         return self.es.result()
 
     def save_weights(self, filename):
