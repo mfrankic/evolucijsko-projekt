@@ -33,7 +33,7 @@ class LunarLanderSolver:
 
     def train(self, num_iterations):
         """Train the policy for the given number of iterations."""
-        with mp.Pool(12) as pool:
+        with mp.Pool() as pool:
             for iter in range(num_iterations):
                 params_list = self.es.ask()
                 reward_list = pool.map(self.get_reward, params_list)
