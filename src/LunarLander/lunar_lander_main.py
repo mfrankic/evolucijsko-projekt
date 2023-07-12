@@ -46,9 +46,11 @@ if __name__ == '__main__':
     wind = sys.argv[2] == '--wind' if len(sys.argv) > 2 else False
     get_data = sys.argv[3] == '--get-data' if len(sys.argv) > 3 else False
     if action == 'play':
-        if wind:
-            opposite = sys.argv[3] == '--opposite' if len(sys.argv) > 4 else False
+        if wind and get_data:
+            opposite = sys.argv[4] == '--opposite' if len(sys.argv) > 4 else False
+        elif ((not wind) and get_data) or (wind and (not get_data)):
+            opposite = sys.argv[3] == '--opposite' if len(sys.argv) > 3 else False
         else:
-            opposite = sys.argv[2] == '--opposite' if len(sys.argv) > 3 else False
+            opposite = sys.argv[2] == '--opposite' if len(sys.argv) > 2 else False
 
     main(action, wind, get_data, opposite)

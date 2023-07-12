@@ -11,6 +11,7 @@ from es import OpenES
 class BipedalWalkerSolver:
     def __init__(self, num_params):
         self.es = OpenES(num_params)
+        self.hardcore = False
 
     def get_action(self, params, state):
         """Compute action using a simple linear policy."""
@@ -19,7 +20,7 @@ class BipedalWalkerSolver:
 
     def get_reward(self, params):
         """Run one episode with the given parameters and return the total reward."""
-        env = gym.make('BipedalWalker-v3')
+        env = gym.make('BipedalWalker-v3', hardcore=self.hardcore)
         state, _ = env.reset()
         total_reward = 0.0
         no_change_counter = 0
@@ -45,8 +46,10 @@ class BipedalWalkerSolver:
                 break
         return total_reward
 
-    def train(self, num_iterations):
+    def train(self, num_iterations, hardcore=False):
         """Train the policy for the given number of iterations."""
+        self.hardcore = hardcore
+        
         with mp.Pool() as pool:
             for iter in range(num_iterations):
                 params_list = self.es.ask()
@@ -70,12 +73,12 @@ class BipedalWalkerSolver:
             self.es.set_mu(pickle.load(f))
         return self.es.mu
             
-    def play(self, params, render=True):
+    def play(self, params, render=True, hardcore=False):
         """Use the trained policy to play the game."""
         if render:
-            env = gym.make('BipedalWalker-v3', render_mode='human')
+            env = gym.make('BipedalWalker-v3', render_mode='human', hardcore=hardcore)
         else:
-            env = gym.make('BipedalWalker-v3')
+            env = gym.make('BipedalWalker-v3', hardcore=hardcore)
         
         state, _ = env.reset()
         
