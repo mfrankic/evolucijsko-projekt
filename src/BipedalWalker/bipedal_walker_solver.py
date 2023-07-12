@@ -53,7 +53,7 @@ class BipedalWalkerSolver:
                 reward_list = pool.map(self.get_reward, params_list)
                 self.es.tell(reward_list)
                 if (iter + 1) % 10 == 0:
-                    print(f'Iteration: {iter + 1}, Reward: {max(reward_list)}')
+                    print(f'Iteration: {iter + 1}, Reward: {np.mean(reward_list)}')
                     # append the iteration number and reward to a csv file
                     with open('../../data/bipedal_walker_iteration_reward.csv', 'a') as f:
                         f.write(f'{iter + 1},{np.mean(reward_list)}\n')
