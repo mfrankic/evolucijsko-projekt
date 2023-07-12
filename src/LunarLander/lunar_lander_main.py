@@ -45,6 +45,7 @@ if __name__ == '__main__':
     action = sys.argv[1]
     wind = sys.argv[2] == '--wind' if len(sys.argv) > 2 else False
     get_data = sys.argv[3] == '--get-data' if len(sys.argv) > 3 else False
+    opposite = False
     if action == 'play':
         if wind and get_data:
             opposite = sys.argv[4] == '--opposite' if len(sys.argv) > 4 else False

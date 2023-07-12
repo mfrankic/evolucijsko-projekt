@@ -7,12 +7,9 @@ from bipedal_walker_solver import BipedalWalkerSolver
 solver = BipedalWalkerSolver(num_params=24*4)
 
 def main(action, hardcore=False, get_data=False, opposite=False):
-    print(f'Hardcore: {hardcore}')
-    print(f'Get data: {get_data}')
-    print(f'Opposite: {opposite}')
     if action == 'train':
         # Train the model
-        iterations = 4000
+        iterations = 6000
         start = time.time() / 60
         best_params, best_reward, curr_reward, sigma = solver.train(num_iterations=iterations, hardcore=hardcore)
         end = time.time() / 60
@@ -48,6 +45,7 @@ if __name__ == '__main__':
     action = sys.argv[1]
     hardcore = sys.argv[2] == '--hardcore' if len(sys.argv) > 2 else False
     get_data = sys.argv[3] == '--get-data' if len(sys.argv) > 3 else False
+    opposite = False
     if action == 'play':
         if hardcore and get_data:
             opposite = sys.argv[4] == '--opposite' if len(sys.argv) > 4 else False
