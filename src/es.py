@@ -145,7 +145,7 @@ class OpenES:
     normalized_reward = (reward - np.mean(reward)) / np.std(reward)
     change_mu = 1./(self.popsize*self.sigma)*np.dot(self.epsilon.T, normalized_reward)
     
-    self.mu += self.learning_rate * change_mu
+    # self.mu += self.learning_rate * change_mu
 
     self.optimizer.stepsize = self.learning_rate
     update_ratio = self.optimizer.update(-change_mu)
