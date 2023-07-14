@@ -17,6 +17,11 @@ def plot_graphs():
             df = pd.read_csv(os.path.join(data_dir, file))
             if "iteration_reward" in file:
                 plt.plot(df["generation"], df["reward"])
+                
+                # average reward for every 100 generations
+                # average_reward = df.groupby(df["generation"] // 100 * 100).mean()
+                # plt.plot(average_reward.index, average_reward["reward"])
+                
                 plt.title(file)
                 plt.xlabel("Generation")
                 plt.ylabel("Reward")
