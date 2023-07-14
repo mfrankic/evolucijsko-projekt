@@ -28,7 +28,7 @@ def main(action, wind=False, get_data=False, opposite=False):
         solver.play(best_params, wind=wind)
     elif action == 'play':
         # Load the weights and play the game
-        best_params = solver.load_weights('lunar_lander_wind_weights.pkl') if ((not opposite) and wind) else solver.load_weights('lunar_lander_weights.pkl')
+        best_params = solver.load_weights('lunar_lander_wind_weights.pkl') if opposite ^ wind else solver.load_weights('lunar_lander_weights.pkl')
         
         if get_data:
             for i in range(1, 1001):
@@ -42,16 +42,23 @@ def main(action, wind=False, get_data=False, opposite=False):
         print('Invalid action')
 
 if __name__ == '__main__':
-    action = sys.argv[1]
-    wind = sys.argv[2] == '--wind' if len(sys.argv) > 2 else False
-    get_data = sys.argv[3] == '--get-data' if len(sys.argv) > 3 else False
-    opposite = False
-    if action == 'play':
-        if wind and get_data:
-            opposite = sys.argv[4] == '--opposite' if len(sys.argv) > 4 else False
-        elif ((not wind) and get_data) or (wind and (not get_data)):
-            opposite = sys.argv[3] == '--opposite' if len(sys.argv) > 3 else False
-        else:
-            opposite = sys.argv[2] == '--opposite' if len(sys.argv) > 2 else False
+    action = sys.argv[1] if len(sys.argv) > 1 else 'help'
+    args = sys.argv[2:]
+    
+    wind = '--wind' in args
+    opposite = '--opposite' in args
+    get_data = '--get-data' in args
+
+    # write help message
+    help_message = 'Usage: python lunar_lander_main.py <action> [--wind] [--opposite] [--get-data]\n\n'
+    additional_info = 'action: train or play\n\n'
+    additional_info += '--wind: play the game with wind\n'
+    additional_info += '--opposite: play the game with weights trained on the opposite version\n'
+    additional_info += '--get-data: play the game and get the data for 1000 iterations\n'
+    additional_info += '\nNote: --opposite and --get-data can only be used with action play\n'
+    
+    if action == 'help':
+        print(help_message + additional_info)
+        exit()
 
     main(action, wind, get_data, opposite)
