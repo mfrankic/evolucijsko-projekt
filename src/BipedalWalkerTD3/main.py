@@ -16,7 +16,7 @@ start_timestep=1e4
 
 std_noise=0.1
 
-env = gym.make('BipedalWalker-v3', hardcore=True)
+env = gym.make('BipedalWalker-v3')
 
 state, _ = env.reset()
 state_dim = env.observation_space.shape[0]
@@ -122,7 +122,7 @@ def twin_ddd_train(n_episodes=3000, save_every=10):
         # Save episode if more than save_every=5000 timesteps
         if timestep_after_last_save >= save_every:
             timestep_after_last_save %= save_every
-            save(agent, 'checkpnt_seed_88', 'dir_chk_hard')
+            save(agent, 'checkpnt_seed_88', 'dir_chk')
         
         if len(scores_deque) == 100 and np.mean(scores_deque) >= 300.5:
             print('Environment solved with Average Score: ',  np.mean(scores_deque))
@@ -138,4 +138,4 @@ def twin_ddd_train(n_episodes=3000, save_every=10):
 
 scores, avg_scores = twin_ddd_train()
 
-save(agent, 'chpnt_88seed_300-5sc_9h44m', 'dir_chk_hard')
+save(agent, 'chpnt_88seed_300-5sc_9h44m', 'dir_chk')

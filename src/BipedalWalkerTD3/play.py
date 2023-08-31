@@ -13,7 +13,7 @@ import time
 from TwinDelayed import Actor, Critic, ReplayBuffer, TD3
 from collections import deque
 
-env = gym.make('BipedalWalker-v3', hardcore=True)
+env = gym.make('BipedalWalker-v3')
 
 state, _ = env.reset()
 state_dim = env.observation_space.shape[0]

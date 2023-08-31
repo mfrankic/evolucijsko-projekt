@@ -66,7 +66,7 @@ class LunarLanderSolver:
         else:
             env = gym.make('LunarLander-v2', enable_wind=wind)
 
-        state, _ = env.reset()
+        state, _ = env.reset(seed=2)
         
         total_reward = 0
         for _ in range(1000):
