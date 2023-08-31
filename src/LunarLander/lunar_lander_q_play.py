@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 
 # Load the saved q_states dictionary
-q_states = np.load("q_states.npy", allow_pickle=True).item() 
+q_states = np.load("same_seed/q_states.npy", allow_pickle=True).item() 
 
 # Define a function for discretizing states similar to the training script
 def discretize_state(state):
@@ -22,7 +22,7 @@ def best_action(qstates_dict, state, env_actions):
     return np.argmax(qvals)
 
 env = gym.make("LunarLander-v2")
-env.reset()
+env.reset(seed=35)
 
 # This is the maximum number of timesteps per episode. Set it as per your requirements.
 MAX_TIMESTEPS_PER_EPISODE = 1000
@@ -30,7 +30,7 @@ MAX_TIMESTEPS_PER_EPISODE = 1000
 # Loop over episodes
 for episode in range(1000):
     # Reset the environment and initialize variables
-    state = discretize_state(env.reset()[0])
+    state = discretize_state(env.reset(seed=35)[0])
     total_reward = 0
 
     for t in range(MAX_TIMESTEPS_PER_EPISODE):

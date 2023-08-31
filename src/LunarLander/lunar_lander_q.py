@@ -5,9 +5,9 @@ import random
 import time
 
 env = gym.make("LunarLander-v2")
-env.reset()
+env.reset(seed=35)
 
-EPISODES = 50000
+EPISODES = 20000
 GAMMA = 0.99
 LEARNING_RATE = 0.1
 MIN_EPSILON = 0.01
@@ -56,7 +56,7 @@ for i in range(EPISODES):
     t = 0
 
     # Initial episode state: S
-    curr_state = discretize_state(env.reset()[0])
+    curr_state = discretize_state(env.reset(seed=35)[0])
     
     while True:
         action = get_action(q_states, curr_state, epsilon, num_actions)
@@ -106,4 +106,4 @@ with open('../../data/lunar_lander_q_training_time.csv', 'w') as f:
     f.write(f'{training_time}, {EPISODES}')
 
 # save q_states dictionary to file
-np.save("q_states.npy", q_states)
+np.save("same_seed/q_states.npy", q_states)
