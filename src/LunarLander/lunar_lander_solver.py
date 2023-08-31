@@ -21,7 +21,7 @@ class LunarLanderSolver:
     def get_reward(self, params):
         """Run one episode with the given parameters and return the total reward."""
         env = gym.make('LunarLander-v2', enable_wind=self.wind)
-        state, _ = env.reset()
+        state, _ = env.reset(seed=35)
         total_reward = 0.0
         for _ in range(1000):  # Run for a maximum of 1000 steps
             action = self.get_action(params, state)
@@ -66,7 +66,7 @@ class LunarLanderSolver:
         else:
             env = gym.make('LunarLander-v2', enable_wind=wind)
 
-        state, _ = env.reset(seed=2)
+        state, _ = env.reset(seed=35)
         
         total_reward = 0
         for _ in range(1000):

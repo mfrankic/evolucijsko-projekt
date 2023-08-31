@@ -9,7 +9,7 @@ solver = LunarLanderSolver(num_params=4*8)
 def main(action, wind=False, get_data=False, opposite=False):
     if action == 'train':
         # Train the model
-        iterations = 4000
+        iterations = 2000
         start = time.time()
         best_params, best_reward, curr_reward, sigma = solver.train(num_iterations=iterations, wind=wind)
         end = time.time()
@@ -21,14 +21,14 @@ def main(action, wind=False, get_data=False, opposite=False):
             f.write(f'{training_time},{iterations}')
 
         # Save the weights
-        solver.save_weights('lunar_lander_wind_weights.pkl') if wind else solver.save_weights('lunar_lander_weights.pkl')
+        solver.save_weights('same_seed/lunar_lander_wind_weights.pkl') if wind else solver.save_weights('same_seed/lunar_lander_weights.pkl')
 
         # Load the weights and play the game
-        solver.load_weights('lunar_lander_wind_weights.pkl') if wind else solver.load_weights('lunar_lander_weights.pkl')
+        solver.load_weights('same_seed/lunar_lander_wind_weights.pkl') if wind else solver.load_weights('same_seed/lunar_lander_weights.pkl')
         solver.play(best_params, wind=wind)
     elif action == 'play':
         # Load the weights and play the game
-        best_params = solver.load_weights('lunar_lander_wind_weights.pkl') if opposite ^ wind else solver.load_weights('lunar_lander_weights.pkl')
+        best_params = solver.load_weights('same_seed/lunar_lander_wind_weights.pkl') if opposite ^ wind else solver.load_weights('same_seed/lunar_lander_weights.pkl')
         
         if get_data:
             for i in range(1, 1001):
